@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>Compras del Taller</title>
+<style>
+:root{
+  --bg:#0f172a; --card:#1e293b; --card2:#273449; --line:#334155;
+  --txt:#f1f5f9; --sub:#94a3b8; --acc:#22c55e; --acc2:#16a34a;
+  --red:#ef4444; --amb:#f59e0b; --blue:#38bdf8;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px}
+body{padding-bottom:84px;min-height:100vh}
+button{font:inherit;color:inherit;border:0;cursor:pointer}
+input,textarea{font:inherit}
+header{padding:18px 16px 8px;padding-top:calc(18px + env(safe-area-inset-top))}
+header h1{margin:0;font-size:22px}
+header p{margin:4px 0 0;color:var(--sub);font-size:14px}
+main{padding:0 14px}
+.card{background:var(--card);border-radius:18px;padding:14px;margin:10px 0}
+.row{display:flex;align-items:center;gap:10px}
+.between{justify-content:space-between}
+.sub{color:var(--sub);font-size:13px}
+.big{font-size:26px;font-weight:800}
+.red{color:var(--red)} .green{color:var(--acc)} .amb{color:var(--amb)} .blue{color:var(--blue)}
+.btn{background:var(--acc);color:#05230f;font-weight:700;border-radius:14px;padding:13px 16px;width:100%;font-size:16px}
+.btn.sec{background:var(--card2);color:var(--txt)}
+.btn.red{background:var(--red);color:#fff}
+.btn.sm{width:auto;padding:9px 13px;font-size:14px;border-radius:12px}
+.btns{display:flex;gap:8px;margin-top:10px}
+.btns .btn{flex:1}
+.datebar{display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:16px;padding:6px}
+.datebar button{background:var(--card2);width:44px;height:44px;border-radius:12px;font-size:20px}
+.datebar .d{text-align:center;font-weight:700}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.stat{background:var(--card2);border-radius:14px;padding:10px}
+.stat b{display:block;font-size:19px;margin-top:2px}
+.person{display:flex;align-items:center;gap:10px;padding:11px 4px;border-bottom:1px solid var(--line)}
+.person:last-child{border-bottom:0}
+.av{width:40px;height:40px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-weight:800;flex:none}
+.av.me{background:#14532d;color:#86efac}
+.pinfo{flex:1;min-width:0}
+.pinfo .n{font-weight:700}
+.pinfo .s{color:var(--sub);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tog{display:flex;gap:5px}
+.tog button{background:var(--card2);border-radius:10px;padding:8px 10px;font-size:13px;font-weight:700}
+.tog button.on-si{background:var(--acc);color:#05230f}
+.tog button.on-no{background:#475569;color:#fff}
+.badge{font-size:12px;font-weight:800;padding:3px 8px;border-radius:999px;background:var(--card2)}
+.badge.r{background:#450a0a;color:#fca5a5}
+.badge.g{background:#052e16;color:#86efac}
+nav{position:fixed;left:0;right:0;bottom:0;background:#0b1222;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:20}
+nav button{flex:1;background:none;padding:9px 0 10px;color:var(--sub);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button span{font-size:21px}
+nav button.on{color:var(--acc)}
+.sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40;display:none;align-items:flex-end}
+.sheet-bg.show{display:flex}
+.sheet{background:var(--card);width:100%;max-height:92vh;overflow:auto;border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+.sheet h2{margin:0 0 4px;font-size:20px}
+label{display:block;font-size:13px;color:var(--sub);margin:12px 0 5px}
+.inp{width:100%;background:var(--bg);border:1px solid var(--line);color:var(--txt);border-radius:12px;padding:12px;font-size:17px}
+.inp:focus{outline:2px solid var(--acc);border-color:transparent}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{background:var(--card2);border-radius:999px;padding:7px 12px;font-size:14px}
+.chip.on{background:var(--acc);color:#05230f;font-weight:700}
+.result{background:var(--bg);border-radius:14px;padding:12px;margin-top:12px;font-weight:700}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.cal .h{font-size:12px;color:var(--sub);padding:4px 0}
+.cal .c{background:var(--card2);border-radius:10px;min-height:46px;padding:5px 0;font-weight:700;position:relative}
+.cal .c.e{background:none}
+.cal .c.t{outline:2px solid var(--acc)}
+.dot{width:8px;height:8px;border-radius:50%;margin:4px auto 0}
+.dot.r{background:var(--red)} .dot.g{background:var(--acc)}
+.list-item{padding:10px 0;border-bottom:1px solid var(--line)}
+.list-item:last-child{border-bottom:0}
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:#f1f5f9;color:#0f172a;padding:11px 18px;border-radius:999px;font-weight:700;z-index:60;opacity:0;transition:.25s;pointer-events:none;max-width:90%;text-align:center}
+.toast.show{opacity:1}
+.welcome{position:fixed;inset:0;background:var(--bg);z-index:50;display:flex;flex-direction:column;padding:30px 24px calc(24px + env(safe-area-inset-bottom));padding-top:calc(30px + env(safe-area-inset-top))}
+.welcome .em{font-size:80px;text-align:center;margin-top:8vh}
+.welcome h2{text-align:center;font-size:26px;margin:16px 0 10px}
+.welcome p{color:var(--sub);text-align:center;line-height:1.5;font-size:16px}
+.welcome .pts{display:flex;justify-content:center;gap:7px;margin:auto 0 18px}
+.welcome .pts i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.welcome .pts i.on{background:var(--acc);width:24px;border-radius:9px}
+.empty{text-align:center;color:var(--sub);padding:24px 8px}
+.sec-title{font-size:14px;color:var(--sub);font-weight:700;margin:18px 4px 4px;text-transform:uppercase;letter-spacing:.5px}
+.check{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.check input{width:22px;height:22px;accent-color:var(--acc)}
+.alias{background:var(--bg);border:1px dashed var(--acc);border-radius:12px;padding:12px;text-align:center;font-weight:800;font-size:18px;letter-spacing:.5px;margin-top:8px}
+
+/* ===== MODO CLARO (para usar al sol) ===== */
+body.claro{
+  --bg:#ffffff; --card:#f1f5f9; --card2:#e2e8f0; --line:#cbd5e1;
+  --txt:#0f172a; --sub:#334155; --acc:#15803d; --acc2:#166534;
+  --red:#dc2626; --amb:#b45309; --blue:#0369a1;
+}
+body.claro .card, body.claro .datebar{border:1.5px solid #cbd5e1}
+body.claro .btn{background:#15803d;color:#fff}
+body.claro .btn.sec{background:#e2e8f0;color:#0f172a;border:1.5px solid #94a3b8}
+body.claro .btn.red{background:#dc2626;color:#fff}
+body.claro .tog button.on-si{background:#15803d;color:#fff}
+body.claro .tog button.on-no{background:#475569;color:#fff}
+body.claro .chip.on{background:#15803d;color:#fff}
+body.claro .badge.r{background:#fee2e2;color:#991b1b}
+body.claro .badge.g{background:#dcfce7;color:#14532d}
+body.claro .av.me{background:#bbf7d0;color:#14532d}
+body.claro nav{background:#f8fafc;border-top:2px solid #cbd5e1}
+body.claro nav button{color:#475569}
+body.claro nav button.on{color:#15803d;font-weight:700}
+body.claro .toast{background:#0f172a;color:#fff}
+body.claro .sheet{border-top:2px solid #cbd5e1}
+body.claro .inp{background:#fff;border:1.5px solid #94a3b8}
+body.claro .stat{border:1px solid #cbd5e1}
+.temabtn{position:absolute;right:14px;top:calc(14px + env(safe-area-inset-top));background:var(--card2);border-radius:12px;width:44px;height:44px;font-size:22px}
+header{position:relative}
+header h1{padding-right:56px}
+</style>
+</head>
+<body>
+<header id="hdr"></header>
+<main id="app"></main>
+
+<nav id="nav">
+  <button data-t="ronda" class="on"><span>🛒</span>Ronda</button>
+  <button data-t="cuentas"><span>💰</span>Cuentas</button>
+  <button data-t="calendario"><span>📅</span>Calendario</button>
+  <button data-t="muchachos"><span>👥</span>Muchachos</button>
+  <button data-t="ajustes"><span>⚙️</span>Ajustes</button>
+</nav>
+
+<div class="sheet-bg" id="sheetBg"><div class="sheet" id="sheet"></div></div>
+<div class="sheet-bg" id="dlgBg" style="z-index:70;align-items:center;padding:20px"><div class="sheet" style="border-radius:20px" id="dlg"></div></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="fileIn" accept=".json,application/json,text/plain" style="display:none">
+
+<script>
+/* ===== Compras del Taller ===== */
+const VERSION = '1.1.2';
+const ALIAS = 'MartinchoLujanino';
+const KEY = 'compras_taller_v1';
+const NOVEDADES = [
+  {v:'1.1.2', f:'07/11/2026', t:[
+    'Nuevos botones: Sanguchitos de salame y queso y Sanguchitos de queso de cerdo'
+  ]},
+  {v:'1.1.1', f:'07/11/2026', t:[
+    'Sanguchitos de fiambre, de jamón y queso y de salame para el turno tarde',
+    'De tarde (desde las 13 h) los sanguchitos aparecen primero; de mañana, las tortitas',
+    'Lo que agregás con "Otra cosa" queda guardado como botón para la próxima'
+  ]},
+  {v:'1.1.0', f:'07/11/2026', t:[
+    'Lista para la despensa: todos los encargos juntos (ej. 5 tortitas raspadas) y quién pidió cada cosa',
+    'Tildes para ir marcando lo que ya agarraste en la despensa',
+    'Al anotar un pedido elegís el tipo (raspadas, pinchadas, de manteca…) y la cantidad con − y +',
+    'El precio se puede poner después: lo cargás por unidad en la despensa y la app calcula lo de cada uno',
+    'La app se acuerda de los precios para la próxima',
+    'Mandarte la lista por WhatsApp'
+  ]},
+  {v:'1.0.1', f:'07/11/2026', t:[
+    'Nombre nuevo: Compras del Taller',
+    'Modo claro de alto contraste para verla bien al sol (viene por defecto)',
+    'Botón ☀️/🌙 arriba a la derecha para cambiar entre claro y oscuro'
+  ]},
+  {v:'1.0.0', f:'07/11/2026', t:[
+    'Primera versión 🎉',
+    'Ronda del día: quién quiere y quién no, qué pidió, cuánto sale y cuánto te dio',
+    'Compra para todos (ej. una torta) dividida en partes iguales',
+    'Vuelto en el momento o saldo a favor para la próxima',
+    'Cuentas de cada muchacho con las deudas por fecha',
+    'Calendario con puntitos: rojo si alguien quedó debiendo, verde si está todo pago',
+    'Recordatorio por WhatsApp con las fechas y el total',
+    'Copia de seguridad, copias automáticas y Borrar todo'
+  ]}
+];
+const NOMBRES_INICIALES = ['Martín Bustos','Tito','Sergio Mordillo','Lautaro','Jefe Colo','Jefe Matías','Ismael','Nazaret','Javier Mezatesta','Nicolás','Gustavo Lemos','Ariel','Richard','Santiago'];
+const SUG_MANANA = ['Tortitas raspadas','Tortas pinchadas','Tortas de manteca','Facturas','Medialunas','Galletas'];
+const SUG_TARDE = ['Sanguchitos de fiambre','Sanguchitos de jamón y queso','Sanguchitos de salame y queso','Sanguchitos de salame','Sanguchitos de queso de cerdo'];
+const SUG_OTROS = ['Pan','Gaseosa','Jugo'];
+// de tarde (desde las 13 h) aparecen primero los sanguchitos
+const sugeridos = () => new Date().getHours() >= 13 ? [...SUG_TARDE, ...SUG_MANANA, ...SUG_OTROS] : [...SUG_MANANA, ...SUG_TARDE, ...SUG_OTROS];
+
+/* ---------- utilidades ---------- */
+const $ = s => document.querySelector(s);
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => (n < 0 ? '-' : '') + '$' + Math.round(Math.abs(n)).toLocaleString('es-AR');
+const num = v => { const n = parseInt(String(v ?? '').replace(/[^\d]/g,''), 10); return isNaN(n) ? 0 : n; };
+const pad = n => String(n).padStart(2,'0');
+const iso = d => d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate());
+const hoyISO = () => iso(new Date());
+const parseISO = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
+const DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const DIAS_C = ['dom','lun','mar','mié','jue','vie','sáb'];
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const fCorta = s => { const d = parseISO(s); return DIAS_C[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth()+1); };
+const fLarga = s => { const d = parseISO(s); return DIAS[d.getDay()] + ' ' + d.getDate() + '/' + (d.getMonth()+1); };
+const iniciales = n => n.replace(/^jefe\s+/i,'').split(/\s+/).filter(Boolean).slice(0,2).map(p => p[0].toUpperCase()).join('');
+function toast(msg){ const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2200); }
+
+function preguntar(msg, si = 'Sí', no = 'Cancelar'){
+  return new Promise(res => {
+    $('#dlg').innerHTML = `<p style="font-size:17px;line-height:1.45;margin:4px 0 16px">${esc(msg)}</p><div class="btns"><button class="btn sec" id="dNo">${no}</button><button class="btn" id="dSi">${si}</button></div>`;
+    $('#dlgBg').classList.add('show');
+    const fin = v => { $('#dlgBg').classList.remove('show'); res(v); };
+    $('#dSi').onclick = () => fin(true); $('#dNo').onclick = () => fin(false);
+  });
+}
+
+/* ---------- datos ---------- */
+function estadoNuevo(){
+  return {
+    version: VERSION, bienvenida: false, tema: 'claro',
+    personas: NOMBRES_INICIALES.map((n,i) => ({id: uid()+i, nombre: n, tel: '', yo: i === 0, activo: true})),
+    pedidos: [],   // {id, fecha, pid, que, costo, dio, vuelto}
+    precios: {}, tildes: {},
+    pagos: [],     // {id, fecha, pid, monto}  (monto negativo = le devolviste plata)
+    compras: {},   // fecha -> total del ticket
+    noQuiere: {},  // fecha -> [pid]
+    autoCopias: [] // {fecha, data}
+  };
+}
+let S;
+function cargar(){
+  try { S = JSON.parse(localStorage.getItem(KEY)); } catch(e){ S = null; }
+  if (!S || !Array.isArray(S.personas)) S = estadoNuevo();
+  S.tema ||= 'claro'; S.pedidos ||= []; S.pagos ||= []; S.precios ||= {}; S.tildes ||= {}; S.compras ||= {}; S.noQuiere ||= {}; S.autoCopias ||= [];
+}
+function guardar(){
+  S.version = VERSION;
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){ toast('⚠️ No se pudo guardar'); }
+}
+function copiaAutomatica(){
+  const h = hoyISO();
+  if (S.autoCopias.length && S.autoCopias[0].fecha === h) return;
+  const {autoCopias, ...datos} = S;
+  if (!datos.pedidos.length && !datos.pagos.length) return;
+  S.autoCopias.unshift({fecha: h, data: JSON.stringify(datos)});
+  S.autoCopias = S.autoCopias.slice(0, 7);
+  guardar();
+}
+const persona = id => S.personas.find(p => p.id === id);
+const yo = () => S.personas.find(p => p.yo);
+const ordenadas = () => [...S.personas].filter(p => p.activo).sort((a,b) => (b.yo - a.yo) || a.nombre.localeCompare(b.nombre, 'es'));
+
+/* ---------- cuentas ---------- */
+// Devuelve: saldo (positivo = a favor, negativo = debe), pendientes [{fecha, monto, que}]
+function cuenta(pid){
+  const p = persona(pid);
+  if (!p || p.yo) return {saldo: 0, debe: 0, aFavor: 0, pendientes: []};
+  let credito = 0; const deficits = [];
+  S.pedidos.filter(x => x.pid === pid && x.costo > 0).sort((a,b) => a.fecha.localeCompare(b.fecha)).forEach(x => {
+    const neto = x.dio - x.vuelto - x.costo;
+    if (neto < 0) deficits.push({fecha: x.fecha, monto: -neto, que: x.que});
+    else credito += neto;
+  });
+  S.pagos.filter(x => x.pid === pid).forEach(x => credito += x.monto);
+  const totalDef = deficits.reduce((a,b) => a + b.monto, 0);
+  const saldo = credito - totalDef;
+  // se usa el crédito para cancelar primero las deudas más viejas
+  let c = Math.max(0, credito); const pendientes = [];
+  deficits.forEach(d => {
+    const usa = Math.min(c, d.monto); c -= usa;
+    if (d.monto - usa > 0) pendientes.push({...d, monto: d.monto - usa});
+  });
+  return {saldo, debe: saldo < 0 ? -saldo : 0, aFavor: saldo > 0 ? saldo : 0, pendientes};
+}
+function resumenDia(f){
+  const ped = S.pedidos.filter(x => x.fecha === f);
+  const costo = ped.reduce((a,x) => a + x.costo, 0);
+  const recibido = ped.filter(x => !persona(x.pid)?.yo).reduce((a,x) => a + x.dio - x.vuelto, 0);
+  const deMio = ped.filter(x => persona(x.pid)?.yo).reduce((a,x) => a + x.costo, 0);
+  const ticket = S.compras[f] ?? costo;
+  return {ped, costo, recibido, deMio, ticket, bolsillo: ticket - recibido, aCobrar: ped.filter(x => !persona(x.pid)?.yo && x.costo > 0).reduce((a,x) => a + Math.max(0, x.costo - x.dio + x.vuelto), 0)};
+}
+function estadoDia(f){
+  const ped = S.pedidos.filter(x => x.fecha === f);
+  if (!ped.length) return null;
+  const pids = [...new Set(ped.map(x => x.pid))];
+  const hayDeuda = pids.some(pid => cuenta(pid).pendientes.some(d => d.fecha === f));
+  return hayDeuda ? 'r' : 'g';
+}
+
+/* ---------- navegación ---------- */
+let tab = 'ronda', fechaRonda = hoyISO(), mesCal = new Date();
+mesCal.setDate(1);
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => irA(b.dataset.t));
+function irA(t){
+  tab = t;
+  document.querySelectorAll('nav button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+  render(); window.scrollTo(0,0);
+}
+function render(){
+  ({ronda: vRonda, cuentas: vCuentas, calendario: vCalendario, muchachos: vMuchachos, ajustes: vAjustes})[tab]();
+}
+function head(t, s){ $('#hdr').innerHTML = `<h1>${t}</h1>${s ? `<p>${s}</p>` : ''}<button class="temabtn" onclick="cambiarTema()" aria-label="Cambiar claro/oscuro">${S.tema === 'oscuro' ? '☀️' : '🌙'}</button>`; }
+function aplicarTema(){
+  document.body.classList.toggle('claro', S.tema !== 'oscuro');
+  const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = S.tema === 'oscuro' ? '#0f172a' : '#ffffff';
+}
+function cambiarTema(){ S.tema = S.tema === 'oscuro' ? 'claro' : 'oscuro'; guardar(); aplicarTema(); render(); toast(S.tema === 'oscuro' ? '🌙 Modo oscuro' : '☀️ Modo claro (para el sol)'); }
+
+/* ---------- RONDA ---------- */
+function vRonda(){
+  const esHoy = fechaRonda === hoyISO();
+  head('🛒 Compras del Taller', 'Anotá quién quiere, qué pidió y cuánto te dio');
+  const r = resumenDia(fechaRonda);
+  const nq = S.noQuiere[fechaRonda] || [];
+  const quieren = new Set(r.ped.map(x => x.pid));
+  let h = `<div class="datebar"><button onclick="cambiarDia(-1)">‹</button>
+    <div class="d">${esHoy ? 'Hoy, ' : ''}${fLarga(fechaRonda)}<div class="sub">${quieren.size} quieren · ${nq.length} no</div></div>
+    <button onclick="cambiarDia(1)">›</button></div>
+  ${r.ped.length ? `<button class="btn" style="margin-top:10px;font-size:17px" onclick="hojaDespensa()">🛍️ Lista para la despensa (${r.ped.length} ${r.ped.length === 1 ? 'encargo' : 'encargos'})</button>` : ''}
+  ${r.ped.some(x => !x.costo) ? `<p class="sub amb" style="margin:8px 4px 0">⏳ Hay ${r.ped.filter(x => !x.costo).length} pedidos sin precio. Ponelos en la Lista para la despensa.</p>` : ''}
+  <div class="card"><div class="stats">
+    <div class="stat"><span class="sub">Compra total</span><b>${money(r.ticket)}</b></div>
+    <div class="stat"><span class="sub">Te dieron</span><b class="green">${money(r.recibido)}</b></div>
+    <div class="stat"><span class="sub">Pusiste de tu bolsillo</span><b class="${r.bolsillo > 0 ? 'amb' : ''}">${money(Math.max(0, r.bolsillo))}</b></div>
+    <div class="stat"><span class="sub">Quedaron debiendo</span><b class="${r.aCobrar ? 'red' : ''}">${money(r.aCobrar)}</b></div>
+  </div>
+  <div class="btns"><button class="btn sec" onclick="editarCompra()">🧾 Lo que gasté</button><button class="btn sec" onclick="paraTodos()">🎂 Algo para todos</button></div></div>
+  <div class="card">`;
+  ordenadas().forEach(p => {
+    const peds = r.ped.filter(x => x.pid === p.id);
+    const quiere = peds.length > 0, no = nq.includes(p.id);
+    const c = cuenta(p.id);
+    let s = 'Sin marcar';
+    if (quiere) s = peds.map(x => `${esc(x.que || 'Pedido')} ${x.costo ? money(x.costo) : '⏳'}`).join(' + ') + (p.yo ? '' : ` · dio ${money(peds.reduce((a,x)=>a+x.dio-x.vuelto,0))}`);
+    else if (no) s = 'Hoy no quiere';
+    const badge = p.yo ? '' : c.debe ? `<span class="badge r">debe ${money(c.debe)}</span>` : c.aFavor ? `<span class="badge g">a favor ${money(c.aFavor)}</span>` : '';
+    h += `<div class="person">
+      <div class="av ${p.yo ? 'me' : ''}">${esc(iniciales(p.nombre))}</div>
+      <div class="pinfo" onclick="${quiere ? `editarPedido('${peds[0].id}')` : `nuevoPedido('${p.id}')`}"><div class="n">${esc(p.nombre)}${p.yo ? ' (vos)' : ''}</div><div class="s">${s}</div>${badge ? `<div style="margin-top:3px">${badge}</div>` : ''}</div>
+      <div class="tog"><button class="${quiere ? 'on-si' : ''}" onclick="${quiere ? `editarPedido('${peds[0].id}')` : `nuevoPedido('${p.id}')`}">${quiere ? '✏️' : 'Sí'}</button><button class="${no ? 'on-no' : ''}" onclick="marcarNo('${p.id}')">No</button></div>
+    </div>`;
+  });
+  h += `</div>`;
+  if (!esHoy) h += `<button class="btn sec" onclick="fechaRonda=hoyISO();render()">Volver a hoy</button><div style="height:10px"></div>`;
+  $('#app').innerHTML = h;
+}
+function cambiarDia(n){ const d = parseISO(fechaRonda); d.setDate(d.getDate() + n); fechaRonda = iso(d); render(); }
+async function marcarNo(pid){
+  const nq = S.noQuiere[fechaRonda] ||= [];
+  const peds = S.pedidos.filter(x => x.fecha === fechaRonda && x.pid === pid);
+  if (peds.length){
+    if (!await preguntar('Ya tiene un pedido anotado hoy. ¿Lo borro y lo marco como que no quiere?')) return;
+    S.pedidos = S.pedidos.filter(x => !(x.fecha === fechaRonda && x.pid === pid));
+  }
+  const i = nq.indexOf(pid);
+  if (i >= 0) nq.splice(i,1); else nq.push(pid);
+  guardar(); render();
+}
+
+/* ---------- hoja (ventana de abajo) ---------- */
+function abrir(html){ $('#sheet').innerHTML = html; $('#sheetBg').classList.add('show'); }
+function cerrar(){ $('#sheetBg').classList.remove('show'); }
+$('#sheetBg').onclick = e => { if (e.target.id === 'sheetBg') cerrar(); };
+
+/* ---------- pedido ---------- */
+let P = null; // pedido en edición
+const textoItems = items => items.map(i => `${i.cant} ${i.tipo}`).join(', ');
+function precioSugerido(items){
+  if (!items.length) return 0;
+  let t = 0;
+  for (const i of items){ const p = S.precios[i.tipo]; if (!p) return 0; t += p * i.cant; }
+  return t;
+}
+function nuevoPedido(pid){
+  P = {id: null, fecha: fechaRonda, pid, items: [], nota: '', costo: 0, dio: 0, vuelto: 0, auto: true, modo: 'favor'};
+  hojaPedido();
+}
+function editarPedido(id){
+  const x = S.pedidos.find(p => p.id === id); if (!x) return;
+  P = {...x, items: (x.items || []).map(i => ({...i})), nota: x.items ? (x.nota || '') : (x.que || ''), modo: x.vuelto > 0 ? 'vuelto' : 'favor'};
+  hojaPedido();
+}
+function hojaPedido(){
+  const p = persona(P.pid);
+  const c = cuenta(P.pid);
+  const prev = c.saldo - (P.id && P.costo ? (P.dio - P.vuelto - P.costo) : 0);
+  const usados = Object.keys(S.precios);
+  S.pedidos.forEach(x => (x.items || []).forEach(i => usados.push(i.tipo)));
+  const chips = [...new Set([...sugeridos(), ...usados])];
+  abrir(`<h2>${esc(p.nombre)}${p.yo ? ' (vos)' : ''}</h2>
+    <div class="sub">${fLarga(P.fecha)}${!p.yo && prev < 0 ? ` · <span class="red">ya debía ${money(-prev)}</span>` : ''}${!p.yo && prev > 0 ? ` · <span class="green">tiene ${money(prev)} a favor</span>` : ''}</div>
+    <label>¿Qué pidió? Tocá para sumar</label>
+    <div class="chips">${chips.map(t => `<span class="chip" onclick="sumarItem('${esc(t).replace(/'/g,"\\'")}',1)">+ ${esc(t)}</span>`).join('')}</div>
+    <div class="row" style="margin-top:8px"><input class="inp" id="pOtro" placeholder="Otra cosa (ej: Alfajor)" style="flex:1"><button class="btn sm" onclick="agregarOtro()">Sumar</button></div>
+    <div id="pItems"></div>
+    <label>Aclaración (opcional)</label>
+    <input class="inp" id="pNota" value="${esc(P.nota)}" placeholder="Ej: sin azúcar, las más tostadas">
+    <label>¿Cuánto sale? <span class="sub">(si todavía no sabés, dejalo vacío y lo ponés en la despensa)</span></label>
+    <input class="inp" id="pCosto" inputmode="numeric" value="${P.costo && !P.auto ? P.costo : ''}" placeholder="Lo pongo después" oninput="calcPedido()">
+    <div id="pSug"></div>
+    ${p.yo ? '' : `<label>¿Cuánto te dio?</label>
+    <input class="inp" id="pDio" inputmode="numeric" value="${P.dio || ''}" placeholder="$ 0 (si no te dio nada, dejalo vacío)" oninput="calcPedido()">
+    <div class="chips"><span class="chip" onclick="$('#pDio').value=costoActual()||'';calcPedido()">Justo</span><span class="chip" onclick="$('#pDio').value='';calcPedido()">No me dio nada</span></div>
+    <div id="pRes"></div>`}
+    <div class="btns">${P.id ? `<button class="btn red" onclick="borrarPedido()">Borrar</button>` : ''}<button class="btn" onclick="guardarPedido()">Guardar</button></div>
+    <button class="btn sec" style="margin-top:8px" onclick="cerrar()">Cancelar</button>`);
+  dibujarItems(); calcPedido();
+}
+function sumarItem(tipo, n){
+  const it = P.items.find(i => i.tipo === tipo);
+  if (it) it.cant += n; else if (n > 0) P.items.push({tipo, cant: n});
+  P.items = P.items.filter(i => i.cant > 0);
+  dibujarItems(); calcPedido();
+}
+function agregarOtro(){
+  const t = $('#pOtro').value.trim(); if (!t) return;
+  const tipo = t.charAt(0).toUpperCase() + t.slice(1);
+  $('#pOtro').value = ''; sumarItem(tipo, 1);
+}
+function dibujarItems(){
+  const box = $('#pItems'); if (!box) return;
+  box.innerHTML = P.items.length ? `<div class="result" style="font-weight:400">${P.items.map(i => `<div class="row between" style="padding:4px 0">
+      <b>${i.cant} × ${esc(i.tipo)}${S.precios[i.tipo] ? ` <span class="sub">(${money(S.precios[i.tipo])} c/u)</span>` : ''}</b>
+      <div class="tog"><button onclick="sumarItem('${esc(i.tipo).replace(/'/g,"\\'")}',-1)">−</button><button onclick="sumarItem('${esc(i.tipo).replace(/'/g,"\\'")}',1)">+</button></div></div>`).join('')}</div>`
+    : `<p class="sub">Todavía no sumaste nada.</p>`;
+}
+function costoActual(){
+  const v = $('#pCosto') ? $('#pCosto').value.trim() : '';
+  return v !== '' ? num(v) : precioSugerido(P.items);
+}
+function calcPedido(){
+  const sug = $('#pSug');
+  if (sug){
+    const s = precioSugerido(P.items), manual = $('#pCosto').value.trim() !== '';
+    sug.innerHTML = !manual && s ? `<p class="sub green" style="margin:6px 2px 0">Con los precios guardados sale ${money(s)}</p>`
+      : !manual && P.items.length ? `<p class="sub" style="margin:6px 2px 0">⏳ El precio se calcula solo cuando lo pongas en la Lista para la despensa</p>` : '';
+  }
+  const box = $('#pRes'); if (!box) return;
+  const costo = costoActual(), dio = num($('#pDio').value);
+  const dif = dio - costo;
+  if (!costo){ box.innerHTML = dio ? `<div class="result">Te dio ${money(dio)}. Cuando pongas el precio, la app calcula si debe o le sobra.</div>` : ''; return; }
+  if (!dio && !costo){ box.innerHTML = ''; return; }
+  if (dif < 0) box.innerHTML = `<div class="result red">Te queda debiendo ${money(-dif)}</div>`;
+  else if (dif === 0) box.innerHTML = `<div class="result green">✔ Pagó justo</div>`;
+  else box.innerHTML = `<div class="result"><span class="green">Le sobran ${money(dif)}</span>
+    <div class="chips"><span class="chip ${P.modo === 'vuelto' ? 'on' : ''}" onclick="P.modo='vuelto';calcPedido()">💵 Le di el vuelto</span><span class="chip ${P.modo === 'favor' ? 'on' : ''}" onclick="P.modo='favor';calcPedido()">⭐ Queda a favor</span></div></div>`;
+}
+function guardarPedido(){
+  const p = persona(P.pid);
+  const nota = $('#pNota').value.trim();
+  if (!P.items.length && !nota){ toast('Sumá qué pidió'); return; }
+  const manual = $('#pCosto').value.trim() !== '';
+  const costo = manual ? num($('#pCosto').value) : precioSugerido(P.items);
+  const dio = p.yo ? costo : num($('#pDio').value);
+  const vuelto = (!p.yo && costo && dio > costo && P.modo === 'vuelto') ? dio - costo : 0;
+  const que = [textoItems(P.items), nota].filter(Boolean).join(' · ');
+  const reg = {id: P.id || uid(), fecha: P.fecha, pid: P.pid, items: P.items, nota, que, costo, dio, vuelto, auto: !manual};
+  if (P.id) S.pedidos = S.pedidos.map(x => x.id === P.id ? reg : x); else S.pedidos.push(reg);
+  const nq = S.noQuiere[P.fecha]; if (nq) S.noQuiere[P.fecha] = nq.filter(x => x !== P.pid);
+  guardar(); cerrar(); render(); toast(costo ? 'Pedido guardado ✔' : 'Anotado ✔ (falta el precio)');
+}
+async function borrarPedido(){
+  if (!await preguntar('¿Borrar este pedido?')) return;
+  S.pedidos = S.pedidos.filter(x => x.id !== P.id);
+  guardar(); cerrar(); render(); toast('Pedido borrado');
+}
+
+/* ---------- lista para la despensa ---------- */
+function listaDespensa(f){
+  const peds = S.pedidos.filter(x => x.fecha === f);
+  const tipos = {}; const sueltos = [];
+  peds.forEach(x => {
+    const n = persona(x.pid)?.nombre || '?';
+    if (x.items && x.items.length) x.items.forEach(i => { (tipos[i.tipo] ||= {cant: 0, quien: []}); tipos[i.tipo].cant += i.cant; tipos[i.tipo].quien.push(`${n} (${i.cant})`); });
+    else sueltos.push({n, que: x.que || 'Pedido'});
+  });
+  return {tipos, sueltos, peds};
+}
+function hojaDespensa(){
+  const f = fechaRonda, {tipos, sueltos, peds} = listaDespensa(f);
+  const tild = S.tildes[f] || [];
+  const nombres = Object.keys(tipos).sort((a,b) => tipos[b].cant - tipos[a].cant);
+  const notas = peds.filter(x => x.nota && x.items && x.items.length).map(x => `${esc(persona(x.pid)?.nombre)}: ${esc(x.nota)}`);
+  abrir(`<h2>🛍️ Lista para la despensa</h2><div class="sub">${fLarga(f)} · tocá cada cosa cuando la agarres</div>
+    ${!nombres.length && !sueltos.length ? '<div class="empty">Todavía no hay encargos para este día</div>' : ''}
+    ${nombres.map(t => `<div class="check" onclick="tildar('${esc(t).replace(/'/g,"\\'")}')" style="align-items:flex-start;${tild.includes(t) ? 'opacity:.45;text-decoration:line-through' : ''}">
+        <input type="checkbox" ${tild.includes(t) ? 'checked' : ''} style="pointer-events:none;margin-top:3px">
+        <div style="flex:1"><div style="font-size:19px;font-weight:800">${tipos[t].cant} × ${esc(t)}</div><div class="sub">${tipos[t].quien.map(esc).join(', ')}</div></div></div>`).join('')}
+    ${sueltos.length ? `<div class="sec-title">Otros encargos</div>${sueltos.map(s => `<div class="list-item"><b>${esc(s.n)}</b>: ${esc(s.que)}</div>`).join('')}` : ''}
+    ${notas.length ? `<div class="sec-title">Aclaraciones</div>${notas.map(n => `<div class="list-item">📝 ${n}</div>`).join('')}` : ''}
+    ${nombres.length ? `<div class="sec-title">Precios (por unidad)</div>
+      <p class="sub" style="margin-top:0">Poné lo que sale cada uno y la app calcula sola cuánto le toca a cada muchacho.</p>
+      ${nombres.map((t,i) => `<div class="row" style="margin:6px 0"><span style="flex:1;font-weight:700">${esc(t)}</span><input class="inp dPre" data-t="${esc(t)}" inputmode="numeric" style="width:130px" value="${S.precios[t] || ''}" placeholder="$ c/u"></div>`).join('')}
+      <button class="btn" style="margin-top:8px" onclick="aplicarPrecios()">💲 Guardar precios y calcular</button>` : ''}
+    <button class="btn sec" style="margin-top:8px" onclick="compartirLista()">📲 Mandarme la lista por WhatsApp</button>
+    <button class="btn sec" style="margin-top:8px" onclick="cerrar()">Cerrar</button>`);
+}
+function tildar(t){
+  const l = S.tildes[fechaRonda] ||= [];
+  const i = l.indexOf(t); if (i >= 0) l.splice(i,1); else l.push(t);
+  guardar(); const sc = $('#sheet').scrollTop; hojaDespensa(); $('#sheet').scrollTop = sc;
+}
+function aplicarPrecios(){
+  document.querySelectorAll('.dPre').forEach(inp => { const v = num(inp.value); if (v) S.precios[inp.dataset.t] = v; });
+  let n = 0, faltan = 0;
+  S.pedidos.filter(x => x.fecha === fechaRonda && x.auto && x.items && x.items.length).forEach(x => {
+    const c = precioSugerido(x.items);
+    if (!c){ faltan++; return; }
+    x.costo = c; n++;
+    if (persona(x.pid)?.yo) x.dio = c;
+    if (x.vuelto && x.dio - x.vuelto < c) x.vuelto = Math.max(0, x.dio - c);
+  });
+  guardar(); cerrar(); render();
+  toast(faltan ? `Calculados ${n} pedidos · faltan precios en ${faltan}` : `Listo: ${n} pedidos calculados ✔`);
+}
+function compartirLista(){
+  const {tipos, sueltos, peds} = listaDespensa(fechaRonda);
+  let t = `🛍️ Encargos del ${fLarga(fechaRonda)}:\n` + Object.keys(tipos).map(k => `• ${tipos[k].cant} ${k} (${tipos[k].quien.join(', ')})`).join('\n');
+  if (sueltos.length) t += '\n' + sueltos.map(s => `• ${s.n}: ${s.que}`).join('\n');
+  const notas = peds.filter(x => x.nota && x.items && x.items.length);
+  if (notas.length) t += '\n📝 ' + notas.map(x => `${persona(x.pid)?.nombre}: ${x.nota}`).join(' | ');
+  abrirLink('https://wa.me/?text=' + encodeURIComponent(t));
+}
+
+/* ---------- compra total ---------- */
+function editarCompra(){
+  const r = resumenDia(fechaRonda);
+  abrir(`<h2>🧾 Lo que gasté</h2><div class="sub">${fLarga(fechaRonda)}</div>
+    <p class="sub">Poné lo que pagaste en total en el negocio (el ticket). Si lo dejás vacío, se toma la suma de los pedidos: ${money(r.costo)}.</p>
+    <label>Total de la compra</label>
+    <input class="inp" id="cTot" inputmode="numeric" value="${S.compras[fechaRonda] ?? ''}" placeholder="${money(r.costo)}">
+    <div class="btns"><button class="btn sec" onclick="cerrar()">Cancelar</button><button class="btn" onclick="guardarCompra()">Guardar</button></div>`);
+}
+function guardarCompra(){
+  const v = $('#cTot').value.trim();
+  if (v === '') delete S.compras[fechaRonda]; else S.compras[fechaRonda] = num(v);
+  guardar(); cerrar(); render(); toast('Compra guardada ✔');
+}
+
+/* ---------- algo para todos ---------- */
+function paraTodos(){
+  const quieren = new Set(S.pedidos.filter(x => x.fecha === fechaRonda).map(x => x.pid));
+  const nq = S.noQuiere[fechaRonda] || [];
+  abrir(`<h2>🎂 Algo para todos</h2><div class="sub">Se divide en partes iguales entre los que marques</div>
+    <label>¿Qué compraste?</label><input class="inp" id="tQue" placeholder="Ej: Torta">
+    <label>¿Cuánto salió en total?</label><input class="inp" id="tMonto" inputmode="numeric" placeholder="$ 0" oninput="calcTodos()">
+    <label>¿Entre quiénes se divide?</label>
+    <div class="chips"><span class="chip" onclick="marcarTodos(true)">Todos</span><span class="chip" onclick="marcarTodos(false)">Ninguno</span></div>
+    <div>${ordenadas().map(p => `<label class="check" style="color:var(--txt);font-size:16px;margin:0"><input type="checkbox" class="tChk" value="${p.id}" ${(quieren.has(p.id) || (!quieren.size && !nq.includes(p.id))) ? 'checked' : ''} onchange="calcTodos()">${esc(p.nombre)}</label>`).join('')}</div>
+    <div id="tRes"></div>
+    <p class="sub">A cada uno se le anota su parte como deuda. Cuando te pague, lo marcás en Cuentas.</p>
+    <div class="btns"><button class="btn sec" onclick="cerrar()">Cancelar</button><button class="btn" onclick="guardarTodos()">Dividir</button></div>`);
+  calcTodos();
+}
+function marcarTodos(v){ document.querySelectorAll('.tChk').forEach(c => c.checked = v); calcTodos(); }
+function calcTodos(){
+  const n = document.querySelectorAll('.tChk:checked').length, m = num($('#tMonto').value);
+  $('#tRes').innerHTML = n && m ? `<div class="result">${n} personas · ${money(Math.ceil(m / n))} cada uno</div>` : '';
+}
+function guardarTodos(){
+  const ids = [...document.querySelectorAll('.tChk:checked')].map(c => c.value);
+  const m = num($('#tMonto').value), que = $('#tQue').value.trim() || 'Para todos';
+  if (!m || !ids.length){ toast('Poné el monto y marcá al menos uno'); return; }
+  const parte = Math.ceil(m / ids.length);
+  ids.forEach(pid => {
+    const esYo = persona(pid).yo;
+    S.pedidos.push({id: uid(), fecha: fechaRonda, pid, que: que + ' (para todos)', costo: parte, dio: esYo ? parte : 0, vuelto: 0});
+    const nq = S.noQuiere[fechaRonda]; if (nq) S.noQuiere[fechaRonda] = nq.filter(x => x !== pid);
+  });
+  guardar(); cerrar(); render(); toast(`Dividido: ${money(parte)} cada uno ✔`);
+}
+
+/* ---------- CUENTAS ---------- */
+function vCuentas(){
+  const lista = S.personas.filter(p => !p.yo).map(p => ({p, c: cuenta(p.id)}));
+  const total = lista.reduce((a,x) => a + x.c.debe, 0);
+  const favor = lista.reduce((a,x) => a + x.c.aFavor, 0);
+  head('💰 Cuentas', 'Quién te debe y a quién le quedó plata a favor');
+  const deben = lista.filter(x => x.c.debe).sort((a,b) => b.c.debe - a.c.debe);
+  const aFav = lista.filter(x => x.c.aFavor).sort((a,b) => b.c.aFavor - a.c.aFavor);
+  const alDia = lista.filter(x => !x.c.debe && !x.c.aFavor && x.p.activo);
+  let h = `<div class="card"><div class="sub">Te deben en total</div><div class="big ${total ? 'red' : 'green'}">${money(total)}</div>
+    ${favor ? `<div class="sub" style="margin-top:4px">Saldo a favor de los muchachos: <span class="green">${money(favor)}</span></div>` : ''}</div>`;
+  const fila = x => `<div class="person" onclick="verPersona('${x.p.id}')"><div class="av">${esc(iniciales(x.p.nombre))}</div>
+    <div class="pinfo"><div class="n">${esc(x.p.nombre)}</div><div class="s">${x.c.debe ? x.c.pendientes.map(d => fCorta(d.fecha)).join(', ') : x.c.aFavor ? 'Tiene saldo para la próxima' : 'Al día'}</div></div>
+    ${x.c.debe ? `<span class="badge r">${money(x.c.debe)}</span>` : x.c.aFavor ? `<span class="badge g">+${money(x.c.aFavor)}</span>` : '<span class="badge">✔</span>'}</div>`;
+  if (deben.length) h += `<div class="sec-title">🔴 Me deben</div><div class="card">${deben.map(fila).join('')}</div>`;
+  if (aFav.length) h += `<div class="sec-title">🟢 Tienen a favor</div><div class="card">${aFav.map(fila).join('')}</div>`;
+  if (alDia.length) h += `<div class="sec-title">✔ Al día</div><div class="card">${alDia.map(fila).join('')}</div>`;
+  if (!deben.length && !aFav.length) h += `<div class="empty">Nadie te debe nada 🙌</div>`;
+  $('#app').innerHTML = h;
+}
+function textoWhatsApp(p, c){
+  const nombre = p.nombre.replace(/^jefe\s+/i,'');
+  if (!c.pendientes.length) return `Hola ${nombre}, estás al día conmigo 👍`;
+  const partes = c.pendientes.map(d => `el ${fLarga(d.fecha)}${d.que ? ' – ' + d.que : ''}: ${money(d.monto)}`);
+  return `Hola ${nombre}! Te paso lo que me quedaste debiendo de las compras del taller:\n` + partes.map(x => '• ' + x).join('\n') + `\nTotal: ${money(c.debe)} 👍`;
+}
+function verPersona(pid){
+  const p = persona(pid), c = cuenta(pid);
+  const hist = [
+    ...S.pedidos.filter(x => x.pid === pid).map(x => ({fecha: x.fecha, t: `${x.que || 'Pedido'} · sale ${x.costo ? money(x.costo) : '⏳ falta precio'} · dio ${money(x.dio - x.vuelto)}${x.vuelto ? ` (vuelto ${money(x.vuelto)})` : ''}`, cls: x.dio - x.vuelto - x.costo < 0 ? 'red' : 'green', id: x.id, tipo: 'ped'})),
+    ...S.pagos.filter(x => x.pid === pid).map(x => ({fecha: x.fecha, t: x.monto >= 0 ? `💵 Te pagó ${money(x.monto)}` : `↩️ Le devolviste ${money(-x.monto)}`, cls: 'blue', id: x.id, tipo: 'pago'}))
+  ].sort((a,b) => b.fecha.localeCompare(a.fecha));
+  abrir(`<h2>${esc(p.nombre)}</h2>
+    <div class="big ${c.debe ? 'red' : 'green'}" style="margin-top:6px">${c.debe ? 'Debe ' + money(c.debe) : c.aFavor ? 'A favor ' + money(c.aFavor) : 'Al día ✔'}</div>
+    ${c.pendientes.length ? `<div class="sec-title">Lo que debe, por fecha</div>${c.pendientes.map(d => `<div class="list-item row between"><span>${fLarga(d.fecha)}${d.que ? ` <span class="sub">· ${esc(d.que)}</span>` : ''}</span><b class="red">${money(d.monto)}</b></div>`).join('')}` : ''}
+    <div class="btns">${c.debe ? `<button class="btn" onclick="hojaPago('${pid}')">💵 Me pagó</button>` : ''}${c.aFavor ? `<button class="btn sec" onclick="devolver('${pid}')">↩️ Le devolví</button>` : ''}</div>
+    ${c.debe ? `<button class="btn sec" style="margin-top:8px;background:#128c4a;color:#fff" onclick="whatsapp('${pid}')">📲 Recordarle por WhatsApp</button>` : ''}
+    <div class="sec-title">Historial</div>
+    ${hist.length ? hist.map(x => `<div class="list-item" onclick="${x.tipo === 'pago' ? `borrarPago('${x.id}','${pid}')` : ''}"><div class="sub">${fLarga(x.fecha)}</div><div class="${x.cls}">${esc(x.t)}</div></div>`).join('') : '<div class="empty">Todavía no tiene movimientos</div>'}
+    ${S.pagos.some(x => x.pid === pid) ? '<p class="sub">Tocá un pago si lo anotaste mal y lo querés borrar.</p>' : ''}
+    <button class="btn sec" style="margin-top:12px" onclick="cerrar()">Cerrar</button>`);
+}
+function hojaPago(pid){
+  const p = persona(pid), c = cuenta(pid);
+  abrir(`<h2>💵 ${esc(p.nombre)} te pagó</h2><div class="sub">Debe ${money(c.debe)}</div>
+    <label>¿Cuánto te pagó?</label><input class="inp" id="pgM" inputmode="numeric" value="${c.debe}">
+    <div class="chips"><span class="chip" onclick="$('#pgM').value='${c.debe}'">Todo (${money(c.debe)})</span></div>
+    <p class="sub">Si te paga de más, lo que sobra le queda a favor para la próxima.</p>
+    <div class="btns"><button class="btn sec" onclick="verPersona('${pid}')">Volver</button><button class="btn" onclick="guardarPago('${pid}')">Guardar</button></div>`);
+}
+function guardarPago(pid){
+  const m = num($('#pgM').value); if (!m){ toast('Poné el monto'); return; }
+  S.pagos.push({id: uid(), fecha: hoyISO(), pid, monto: m});
+  guardar(); render(); verPersona(pid); toast('Pago anotado ✔');
+}
+async function devolver(pid){
+  const c = cuenta(pid);
+  if (!await preguntar(`¿Le devolviste los ${money(c.aFavor)} que tenía a favor?`)) return;
+  S.pagos.push({id: uid(), fecha: hoyISO(), pid, monto: -c.aFavor});
+  guardar(); render(); verPersona(pid); toast('Anotado ✔');
+}
+async function borrarPago(id, pid){
+  if (!await preguntar('¿Borrar este pago?')) return;
+  S.pagos = S.pagos.filter(x => x.id !== id);
+  guardar(); render(); verPersona(pid); toast('Pago borrado');
+}
+function whatsapp(pid){
+  const p = persona(pid), txt = encodeURIComponent(textoWhatsApp(p, cuenta(pid)));
+  let tel = (p.tel || '').replace(/\D/g,'');
+  if (tel && !tel.startsWith('54')) tel = '549' + tel.replace(/^0/,'').replace(/^(\d{3,4})15/, '$1');
+  abrirLink(`https://wa.me/${tel}?text=${txt}`);
+}
+function abrirLink(url){
+  const w = window.open(url, '_blank');
+  if (!w) location.href = url;
+}
+
+/* ---------- CALENDARIO ---------- */
+function vCalendario(){
+  head('📅 Calendario', '🔴 alguien quedó debiendo · 🟢 todo pago');
+  const y = mesCal.getFullYear(), m = mesCal.getMonth();
+  const primero = (new Date(y, m, 1).getDay() + 6) % 7; // lunes = 0
+  const dias = new Date(y, m+1, 0).getDate();
+  const h0 = hoyISO();
+  let h = `<div class="datebar"><button onclick="mesCal.setMonth(mesCal.getMonth()-1);render()">‹</button>
+    <div class="d" style="text-transform:capitalize">${MESES[m]} ${y}</div>
+    <button onclick="mesCal.setMonth(mesCal.getMonth()+1);render()">›</button></div>
+    <div class="card"><div class="cal">${['L','M','M','J','V','S','D'].map(d => `<div class="h">${d}</div>`).join('')}`;
+  for (let i = 0; i < primero; i++) h += `<div class="c e"></div>`;
+  let gastoMes = 0, recMes = 0;
+  for (let d = 1; d <= dias; d++){
+    const f = `${y}-${pad(m+1)}-${pad(d)}`, e = estadoDia(f);
+    if (e){ const r = resumenDia(f); gastoMes += r.ticket; recMes += r.recibido; }
+    h += `<div class="c ${f === h0 ? 't' : ''}" onclick="verDia('${f}')">${d}${e ? `<div class="dot ${e}"></div>` : ''}</div>`;
+  }
+  h += `</div></div>
+    <div class="card"><div class="stats">
+      <div class="stat"><span class="sub">Compras del mes</span><b>${money(gastoMes)}</b></div>
+      <div class="stat"><span class="sub">Te dieron</span><b class="green">${money(recMes)}</b></div>
+    </div><p class="sub" style="margin:10px 0 0">Tocá un día para ver quiénes pidieron y quién quedó debiendo.</p></div>`;
+  $('#app').innerHTML = h;
+}
+function verDia(f){
+  const r = resumenDia(f);
+  if (!r.ped.length){
+    abrir(`<h2>${fLarga(f)}</h2><div class="empty">Ese día no hay compras anotadas</div>
+      <div class="btns"><button class="btn sec" onclick="cerrar()">Cerrar</button><button class="btn" onclick="irRonda('${f}')">Anotar ese día</button></div>`);
+    return;
+  }
+  const pids = [...new Set(r.ped.map(x => x.pid))];
+  abrir(`<h2>${fLarga(f)}</h2>
+    <div class="stats" style="margin-top:10px">
+      <div class="stat"><span class="sub">Compra</span><b>${money(r.ticket)}</b></div>
+      <div class="stat"><span class="sub">De tu bolsillo</span><b class="amb">${money(Math.max(0, r.bolsillo))}</b></div>
+    </div>
+    <div class="sec-title">Pedidos</div>
+    ${pids.map(pid => {
+      const p = persona(pid), peds = r.ped.filter(x => x.pid === pid);
+      const pend = p.yo ? [] : cuenta(pid).pendientes.filter(d => d.fecha === f);
+      const debeDia = pend.reduce((a,d) => a + d.monto, 0);
+      return `<div class="list-item row between"><div><b>${esc(p.nombre)}</b><div class="sub">${peds.map(x => `${esc(x.que || 'Pedido')} ${money(x.costo)}`).join(' + ')}</div></div>
+        ${p.yo ? '<span class="badge">vos</span>' : debeDia ? `<span class="badge r">debe ${money(debeDia)}</span>` : '<span class="badge g">pagó ✔</span>'}</div>`;
+    }).join('')}
+    <div class="btns"><button class="btn sec" onclick="cerrar()">Cerrar</button><button class="btn" onclick="irRonda('${f}')">Abrir ese día</button></div>`);
+}
+function irRonda(f){ fechaRonda = f; cerrar(); irA('ronda'); }
+
+/* ---------- MUCHACHOS ---------- */
+function vMuchachos(){
+  head('👥 Los muchachos del taller', `${S.personas.filter(p => p.activo).length} en la lista`);
+  let h = `<button class="btn" style="margin-top:6px" onclick="hojaPersona()">+ Agregar muchacho</button><div class="card">`;
+  ordenadas().forEach(p => {
+    h += `<div class="person" onclick="hojaPersona('${p.id}')"><div class="av ${p.yo ? 'me' : ''}">${esc(iniciales(p.nombre))}</div>
+      <div class="pinfo"><div class="n">${esc(p.nombre)}${p.yo ? ' (vos)' : ''}</div><div class="s">${p.tel ? '📞 ' + esc(p.tel) : 'Sin teléfono'}</div></div><span class="sub">✏️</span></div>`;
+  });
+  h += `</div>`;
+  const inact = S.personas.filter(p => !p.activo);
+  if (inact.length) h += `<div class="sec-title">Ya no están en el taller</div><div class="card">${inact.map(p => `<div class="person" onclick="hojaPersona('${p.id}')"><div class="av">${esc(iniciales(p.nombre))}</div><div class="pinfo"><div class="n">${esc(p.nombre)}</div><div class="s">Tocá para volver a sumarlo</div></div></div>`).join('')}</div>`;
+  $('#app').innerHTML = h;
+}
+function hojaPersona(id){
+  const p = id ? persona(id) : {nombre: '', tel: '', activo: true};
+  const tieneMov = id && (S.pedidos.some(x => x.pid === id) || S.pagos.some(x => x.pid === id));
+  abrir(`<h2>${id ? 'Editar' : 'Nuevo muchacho'}</h2>
+    <label>Nombre</label><input class="inp" id="mN" value="${esc(p.nombre)}" placeholder="Ej: Pablo">
+    <label>Teléfono (para mandarle WhatsApp)</label><input class="inp" id="mT" inputmode="tel" value="${esc(p.tel)}" placeholder="Ej: 261 555-1234">
+    <div class="btns"><button class="btn sec" onclick="cerrar()">Cancelar</button><button class="btn" onclick="guardarPersona('${id || ''}')">Guardar</button></div>
+    ${id && !p.yo ? (p.activo
+      ? `<button class="btn sec" style="margin-top:8px" onclick="quitarPersona('${id}', ${tieneMov ? 'true' : 'false'})">${tieneMov ? '🚪 Ya no está en el taller' : '🗑️ Borrar de la lista'}</button>`
+      : `<button class="btn" style="margin-top:8px" onclick="volverPersona('${id}')">↩️ Volver a sumarlo</button>`) : ''}`);
+}
+function guardarPersona(id){
+  const n = $('#mN').value.trim(), t = $('#mT').value.trim();
+  if (!n){ toast('Poné el nombre'); return; }
+  if (id){ const p = persona(id); p.nombre = n; p.tel = t; }
+  else S.personas.push({id: uid(), nombre: n, tel: t, yo: false, activo: true});
+  guardar(); cerrar(); render(); toast('Guardado ✔');
+}
+async function quitarPersona(id, tieneMov){
+  const p = persona(id), c = cuenta(id);
+  if (c.debe && !await preguntar(`${p.nombre} todavía te debe ${money(c.debe)}. ¿Igual lo saco de la lista? (La deuda queda guardada en Cuentas.)`)) return;
+  if (tieneMov){ p.activo = false; }
+  else { if (!await preguntar(`¿Borrar a ${p.nombre}?`)) return; S.personas = S.personas.filter(x => x.id !== id); }
+  guardar(); cerrar(); render(); toast('Listo');
+}
+function volverPersona(id){ persona(id).activo = true; guardar(); cerrar(); render(); toast('De vuelta en la lista ✔'); }
+
+/* ---------- AJUSTES ---------- */
+function vAjustes(){
+  head('⚙️ Ajustes', 'Versión ' + VERSION);
+  $('#app').innerHTML = `
+    <div class="sec-title">Copia de seguridad</div>
+    <div class="card">
+      <p class="sub" style="margin-top:0">Todo se guarda solo en el teléfono. Igual, cada tanto hacé una copia y guardala en Drive o mandátela por WhatsApp, por si cambiás de celular.</p>
+      <button class="btn" onclick="exportar()">📤 Hacer copia de seguridad</button>
+      <button class="btn sec" style="margin-top:8px" onclick="$('#fileIn').click()">📥 Cargar copia desde archivo</button>
+      <button class="btn sec" style="margin-top:8px" onclick="pegarCopia()">📋 Pegar copia (texto)</button>
+      ${S.autoCopias.length ? `<div class="sec-title" style="margin-top:14px">Copias automáticas (una por día)</div>${S.autoCopias.map((c,i) => `<div class="list-item row between"><span>${fLarga(c.fecha)}</span><button class="btn sec sm" onclick="restaurarAuto(${i})">Restaurar</button></div>`).join('')}` : ''}
+    </div>
+    <div class="sec-title">Colaborar con el creador</div>
+    <div class="card">
+      <p class="sub" style="margin-top:0">Esta app es gratis. Si te sirve y querés darme una mano para seguir mejorándola, podés mandar lo que quieras a este alias:</p>
+      <div class="alias">${ALIAS}</div>
+      <div class="btns"><button class="btn sec" onclick="copiar('${ALIAS}','Alias copiado ✔')">📋 Copiar alias</button><button class="btn sec" onclick="abrirLink('https://www.mercadopago.com.ar/')">Abrir Mercado Pago</button></div>
+    </div>
+    <div class="sec-title">Novedades</div>
+    <div class="card">${NOVEDADES.map(n => `<b>Versión ${n.v}</b> <span class="sub">· ${n.f}</span><ul style="margin:6px 0 0;padding-left:20px;color:var(--sub);line-height:1.5">${n.t.map(t => `<li>${esc(t)}</li>`).join('')}</ul>`).join('')}</div>
+    <div class="sec-title">Pantalla</div>
+    <div class="card">
+      <div class="btns" style="margin-top:0"><button class="btn ${S.tema !== 'oscuro' ? '' : 'sec'}" onclick="S.tema='claro';guardar();aplicarTema();render()">☀️ Claro</button><button class="btn ${S.tema === 'oscuro' ? '' : 'sec'}" onclick="S.tema='oscuro';guardar();aplicarTema();render()">🌙 Oscuro</button></div>
+      <p class="sub" style="margin-bottom:0">El modo claro se ve mejor al sol. El oscuro, de noche o adentro.</p>
+    </div>
+    <div class="sec-title">Otros</div>
+    <div class="card">
+      <button class="btn sec" onclick="mostrarBienvenida(0)">👋 Ver la bienvenida otra vez</button>
+      <button class="btn red" style="margin-top:8px" onclick="borrarTodo()">🗑️ Borrar todo y empezar de cero</button>
+    </div>
+    <p class="sub" style="text-align:center">Compras del Taller · v${VERSION}<br>Hecha por Martín Bustos</p>`;
+}
+function datosExport(){ const {autoCopias, ...d} = S; return JSON.stringify({app: 'compras-taller', ...d}); }
+async function exportar(){
+  const txt = datosExport(), nombre = `compras-taller-copia-${hoyISO()}.json`;
+  const Cap = window.Capacitor, Pl = Cap && Cap.Plugins;
+  if (Cap && Cap.isNativePlatform && Cap.isNativePlatform() && Pl && Pl.Filesystem && Pl.Share){
+    try {
+      const r = await Pl.Filesystem.writeFile({path: nombre, data: txt, directory: 'CACHE', encoding: 'utf8'});
+      await Pl.Share.share({title: 'Copia de Compras del Taller', text: 'Copia de seguridad de Compras del Taller', url: r.uri, dialogTitle: 'Guardar copia'});
+      return;
+    } catch(e){ if (String(e).includes('cancel')) return; }
+  }
+  try {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([txt], {type: 'application/json'}));
+    a.download = nombre; document.body.appendChild(a); a.click(); a.remove();
+    toast('Copia descargada ✔');
+  } catch(e){ copiar(txt, 'Copia copiada al portapapeles ✔'); }
+}
+$('#fileIn').onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => importarTexto(rd.result);
+  rd.readAsText(f); e.target.value = '';
+};
+function pegarCopia(){
+  abrir(`<h2>📋 Pegar copia</h2><label>Pegá acá el texto de la copia</label>
+    <textarea class="inp" id="pgTxt" rows="7"></textarea>
+    <div class="btns"><button class="btn sec" onclick="cerrar()">Cancelar</button><button class="btn" onclick="importarTexto($('#pgTxt').value)">Cargar</button></div>`);
+}
+async function importarTexto(t){
+  let d; try { d = JSON.parse(t); } catch(e){ toast('⚠️ Esa copia no sirve'); return; }
+  if (!d || !Array.isArray(d.personas)){ toast('⚠️ Esa copia no es de Compras del Taller'); return; }
+  if (!await preguntar('Se van a reemplazar los datos actuales por los de la copia. ¿Seguimos?')) return;
+  const auto = S.autoCopias; delete d.app;
+  S = {...estadoNuevo(), ...d, autoCopias: auto, bienvenida: true};
+  guardar(); cerrar(); render(); toast('Copia cargada ✔');
+}
+async function restaurarAuto(i){
+  if (!await preguntar(`¿Volver a cómo estaba el ${fLarga(S.autoCopias[i].fecha)}? Se pierde lo anotado después.`)) return;
+  const auto = S.autoCopias;
+  S = {...estadoNuevo(), ...JSON.parse(auto[i].data), autoCopias: auto, bienvenida: true};
+  guardar(); render(); toast('Restaurado ✔');
+}
+async function borrarTodo(){
+  if (!await preguntar('¿Seguro? Se borran todos los pedidos, pagos y cuentas.')) return;
+  if (!await preguntar('Última pregunta: ¿borro TODO de verdad? Esto no se puede deshacer.')) return;
+  const deja = await preguntar('¿Querés dejar la lista de muchachos?', 'Sí, dejala', 'No, borrá los nombres también');
+  const personas = S.personas;
+  S = estadoNuevo();
+  if (deja) S.personas = personas.map(p => ({...p, activo: true}));
+  S.bienvenida = true;
+  guardar(); fechaRonda = hoyISO(); irA('ronda'); toast('Todo borrado. Empezamos de cero');
+}
+function copiar(t, msg){
+  const ok = () => toast(msg);
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok, () => viejo());
+  else viejo();
+  function viejo(){ const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); ok(); } catch(e){ toast('No se pudo copiar'); } ta.remove(); }
+}
+
+/* ---------- BIENVENIDA ---------- */
+const PANTALLAS = [
+  {em: '🛒', t: '¡Bienvenido a Compras del Taller!', p: 'La app para llevar las compras del desayuno y la merienda de los muchachos, sin papelitos y sin "¿cuánto te debía?".'},
+  {em: '🛒', t: 'Así funciona', p: '1. En <b>Ronda</b> marcás quién quiere y quién no.<br>2. Anotás qué pidió cada uno, cuánto sale y cuánto te dio.<br>3. La app te dice cuánto pusiste de tu bolsillo.'},
+  {em: '💵', t: 'Vuelto o saldo a favor', p: 'Si alguien te da de más, elegís: le das el vuelto en el momento o le queda <b>a favor</b> para la próxima. Si te da de menos, queda anotado lo que te debe.'},
+  {em: '📅', t: 'Nadie se olvida de nada', p: 'En el <b>Calendario</b> ves cada día con un puntito rojo si alguien quedó debiendo. En <b>Cuentas</b> le mandás un WhatsApp con las fechas y el total.'},
+  {em: '🔒', t: 'Tus datos, en tu teléfono', p: 'Todo se guarda solo en tu celular, sin cuentas ni internet. Desde Ajustes podés hacer copias de seguridad cuando quieras.'}
+];
+function mostrarBienvenida(i){
+  let w = $('#welcome');
+  if (!w){ w = document.createElement('div'); w.id = 'welcome'; w.className = 'welcome'; document.body.appendChild(w); }
+  const s = PANTALLAS[i], ult = i === PANTALLAS.length - 1;
+  w.innerHTML = `<div class="em">${s.em}</div><h2>${s.t}</h2><p>${s.p}</p>
+    <div class="pts">${PANTALLAS.map((_,j) => `<i class="${j === i ? 'on' : ''}"></i>`).join('')}</div>
+    <button class="btn" onclick="${ult ? 'cerrarBienvenida()' : `mostrarBienvenida(${i+1})`}">${ult ? '¡Empezar!' : 'Continuar'}</button>
+    ${!ult ? `<button class="btn sec" style="margin-top:8px;background:none;color:var(--sub)" onclick="cerrarBienvenida()">Saltar</button>` : ''}`;
+}
+function cerrarBienvenida(){ const w = $('#welcome'); if (w) w.remove(); S.bienvenida = true; guardar(); render(); }
+
+/* ---------- arranque ---------- */
+cargar();
+aplicarTema();
+copiaAutomatica();
+render();
+if (!S.bienvenida) mostrarBienvenida(0);
+document.addEventListener('visibilitychange', () => { if (document.hidden) guardar(); else if (tab === 'ronda' && fechaRonda < hoyISO() && !$('#sheetBg').classList.contains('show')) { /* nada: respeta el día elegido */ } });
+</script>
+</body>
+</html>
