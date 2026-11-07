@@ -1,1 +1,189 @@
+name: Compilar APK Compras del Taller
 
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Bajar el código
+        uses: actions/checkout@v4
+
+      - name: Instalar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Instalar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Leer la versión de la app (sale del index.html)
+        id: ver
+        run: echo "version=$(grep -oP "const VERSION = '\K[^']+" index.html)" >> "$GITHUB_OUTPUT"
+
+      - name: Usar siempre la misma firma (para instalar encima sin desinstalar)
+        run: |
+          mkdir -p ~/.android
+          cat > firma.b64 <<'FIN'
+          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
+          FIN
+          base64 -d firma.b64 > ~/.android/debug.keystore
+
+      - name: Armar el proyecto Android con Capacitor
+        run: |
+          mkdir -p app/www
+          cp index.html app/www/index.html
+          cd app
+          npm init -y
+          npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6 @capacitor/filesystem@6 @capacitor/share@6
+          npx cap init "Compras del Taller" com.martinbustos.comprastaller --web-dir www
+          npx cap add android
+
+      - name: Poner el ícono de la app
+        run: |
+          cd app
+          npm install --no-save sharp @capacitor/assets
+          mkdir -p iconos
+          cat > iconos/icon-only.svg <<'FIN'
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024"><defs><linearGradient id="g" x1="0" y1="0" x2="0.6" y2="1"><stop offset="0" stop-color="#22c55e"/><stop offset="0.6" stop-color="#15803d"/><stop offset="1" stop-color="#14532d"/></linearGradient></defs><rect width="1024" height="1024" fill="url(#g)"/><g transform="translate(512 540) scale(0.62) translate(-512 -512)">
+              <!-- tortita -->
+              <ellipse cx="420" cy="330" rx="165" ry="120" fill="#f4b54a" stroke="#8a4b12" stroke-width="18"/>
+              <path d="M330 300 q40 -30 80 0 M420 280 q40 -30 80 0 M370 360 q40 -30 80 0" stroke="#b86b1e" stroke-width="16" fill="none" stroke-linecap="round"/>
+              <!-- sanguchito -->
+              <path d="M560 420 L700 200 L840 420 Z" fill="#fde68a" stroke="#8a4b12" stroke-width="18" stroke-linejoin="round"/>
+              <path d="M585 395 L700 225 L815 395" fill="none" stroke="#ef4444" stroke-width="22" stroke-linejoin="round"/>
+              <!-- carrito -->
+              <path d="M120 360 h110 l80 420 h460 l70 -330 H270" fill="none" stroke="#ffffff" stroke-width="56" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="300" y="450" width="500" height="290" rx="20" fill="#ffffff"/>
+              <path d="M380 500 v190 M470 500 v190 M560 500 v190 M650 500 v190 M740 500 v190" stroke="#15803d" stroke-width="22" stroke-linecap="round"/>
+              <circle cx="380" cy="880" r="62" fill="#ffffff"/>
+              <circle cx="720" cy="880" r="62" fill="#ffffff"/>
+            </g>
+          </svg>
+          FIN
+          cat > iconos/icon-foreground.svg <<'FIN'
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+            <g transform="translate(512 540) scale(0.62) translate(-512 -512)">
+              <!-- tortita -->
+              <ellipse cx="420" cy="330" rx="165" ry="120" fill="#f4b54a" stroke="#8a4b12" stroke-width="18"/>
+              <path d="M330 300 q40 -30 80 0 M420 280 q40 -30 80 0 M370 360 q40 -30 80 0" stroke="#b86b1e" stroke-width="16" fill="none" stroke-linecap="round"/>
+              <!-- sanguchito -->
+              <path d="M560 420 L700 200 L840 420 Z" fill="#fde68a" stroke="#8a4b12" stroke-width="18" stroke-linejoin="round"/>
+              <path d="M585 395 L700 225 L815 395" fill="none" stroke="#ef4444" stroke-width="22" stroke-linejoin="round"/>
+              <!-- carrito -->
+              <path d="M120 360 h110 l80 420 h460 l70 -330 H270" fill="none" stroke="#ffffff" stroke-width="56" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="300" y="450" width="500" height="290" rx="20" fill="#ffffff"/>
+              <path d="M380 500 v190 M470 500 v190 M560 500 v190 M650 500 v190 M740 500 v190" stroke="#15803d" stroke-width="22" stroke-linecap="round"/>
+              <circle cx="380" cy="880" r="62" fill="#ffffff"/>
+              <circle cx="720" cy="880" r="62" fill="#ffffff"/>
+            </g>
+          </svg>
+          FIN
+          cat > iconos/icon-background.svg <<'FIN'
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024"><defs><linearGradient id="g" x1="0" y1="0" x2="0.6" y2="1"><stop offset="0" stop-color="#22c55e"/><stop offset="0.6" stop-color="#15803d"/><stop offset="1" stop-color="#14532d"/></linearGradient></defs><rect width="1024" height="1024" fill="url(#g)"/></svg>
+          FIN
+          cat > hacer-iconos.js <<'FIN'
+          // Convierte los SVG del ícono en PNG de 1024x1024 para @capacitor/assets
+          // Uso: node hacer-iconos.js <carpeta-de-los-svg> <carpeta-destino>
+          const sharp = require('sharp');
+          const fs = require('fs');
+          const path = require('path');
+          const origen = process.argv[2], destino = process.argv[3];
+          fs.mkdirSync(destino, { recursive: true });
+          (async () => {
+            for (const n of ['icon-only', 'icon-foreground', 'icon-background']) {
+              await sharp(path.join(origen, n + '.svg'), { density: 300 })
+                .resize(1024, 1024).png().toFile(path.join(destino, n + '.png'));
+              console.log('Ícono listo:', n);
+            }
+          })();
+          FIN
+          node hacer-iconos.js iconos assets
+          npx capacitor-assets generate --android --iconBackgroundColor '#15803d' --iconBackgroundColorDark '#15803d'
+
+      - name: Poner número de versión
+        run: |
+          sed -i "s/versionCode 1$/versionCode ${{ github.run_number }}/" app/android/app/build.gradle
+          sed -i "s/versionName \"1.0\"/versionName \"${{ steps.ver.outputs.version }}\"/" app/android/app/build.gradle
+          grep -n "version" app/android/app/build.gradle
+
+      - name: Compilar el APK
+        run: |
+          cd app
+          npx cap sync android
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+          cp app/build/outputs/apk/debug/app-debug.apk ../../Compras-del-Taller.apk
+
+      - name: Subir el APK (Actions)
+        uses: actions/upload-artifact@v4
+        with:
+          name: compras-taller-APK
+          path: Compras-del-Taller.apk
+
+      - name: Publicar en Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.ver.outputs.version }}
+          name: Compras del Taller v${{ steps.ver.outputs.version }}
+          body: |
+            🛒 Compras del Taller v${{ steps.ver.outputs.version }}
+            Descargá el archivo Compras-del-Taller.apk de acá abajo e instalalo en tu teléfono.
+          files: Compras-del-Taller.apk
+          make_latest: true
